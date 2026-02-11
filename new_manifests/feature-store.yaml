@@ -1,0 +1,48 @@
+apiVersion: feast.dev/v1
+kind: FeatureStore
+metadata:
+  name: insurancestore
+  namespace: feast
+spec:
+  cronJob:
+    schedule: '@hourly'
+    suspend: false
+  feastProject: statefarm
+  feastProjectDir:
+    git:
+      ref: main
+      url: 'https://github.com/brianjball/rhoai-feature-store.git'
+      featureRepoPath: feast/
+  services:
+    offlineStore:
+      persistence:
+        store:
+          secretRef:
+            name: postgres-secret
+          type: postgres
+      server:
+        image: 'quay.io/feastdev-ci/feature-server:4018e7b0c39825a5647fb17fc5607d72fb4bc0ce'
+    onlineStore:
+      persistence:
+        store:
+          type: redis
+      server:
+        image: 'quay.io/feastdev-ci/feature-server:4018e7b0c39825a5647fb17fc5607d72fb4bc0ce'
+        resources:
+          limits:
+            cpu: 2000m
+            memory: 2Gi
+          requests:
+            cpu: 500m
+            memory: 512Mi
+    registry:
+      local:
+        persistence:
+          store:
+            secretRef:
+              name: feast-data-stores
+            type: sql
+        server:
+          image: 'quay.io/feastdev-ci/feature-server:4018e7b0c39825a5647fb17fc5607d72fb4bc0ce'
+          logLevel: debug
+          restAPI: true

@@ -1,0 +1,22 @@
+project: insurance_demo
+
+registry:
+  path: data/registry.db
+  cache_ttl_seconds: 60
+  # For higher concurrency, consider SQL registry:
+  # registry_type: sql
+  # path: postgresql://user:password@host:5432/feast_registry
+
+offline_store:
+  type: postgres
+  host: postgres://postgres.feast.svc.cluster.local
+  port: 5432
+  database: ${DB_NAME}
+  db_schema: feast
+  user: ${DB_USERNAME}
+  password: ${DB_PASSWORD}
+online_store:
+  type: redis
+  connection_string: redis:6379
+  
+entity_key_serialization_version: 3
