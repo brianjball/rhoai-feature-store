@@ -8,15 +8,12 @@ registry:
   # path: postgresql://user:password@host:5432/feast_registry
 
 offline_store:
-  type: postgres
-  host: postgres://postgres.feast.svc.cluster.local
-  port: 5432
-  database: ${DB_NAME}
-  db_schema: feast
-  user: ${DB_USERNAME}
-  password: ${DB_PASSWORD}
+    type: dask
 online_store:
   type: redis
-  connection_string: redis:6379
-  
+  connection_string: "localhost:6379"
+feature_server:
+  type: local
+  transformation_service_endpoint: "localhost:6569"
+
 entity_key_serialization_version: 3
